@@ -5,7 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PemasokController;
 use App\Http\Controllers\BarangController;
-
+use App\Http\Controllers\TransaksiStokController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('kategori', KategoriController::class);
     Route::resource('pemasok', PemasokController::class);
     Route::resource('barang', BarangController::class);
+    Route::get('transaksi', [TransaksiStokController::class, 'index'])->name('transaksi.index');
+    Route::get('transaksi/create', [TransaksiStokController::class, 'create'])->name('transaksi.create');
+    Route::post('transaksi', [TransaksiStokController::class, 'store'])->name('transaksi.store');
+    Route::resource('pegawai', PegawaiController::class)
+        ->middleware('can:isAdmin');
+    Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])->name('laporan.pdf');
 });
 
 require __DIR__ . '/auth.php';

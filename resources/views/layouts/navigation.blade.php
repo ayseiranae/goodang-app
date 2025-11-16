@@ -24,6 +24,17 @@
                     <x-nav-link :href="route('barang.index')" :active="request()->routeIs('barang.*')">
                         {{ __('Barang') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('transaksi.index')" :active="request()->routeIs('transaksi.*')">
+                        {{ __('Transaksi Stok') }}
+                    </x-nav-link>
+                    @can('isAdmin')
+                        <x-nav-link :href="route('pegawai.index')" :active="request()->routeIs('pegawai.*')">
+                            {{ __('Kelola Pegawai') }}
+                        </x-nav-link>
+                    @endcan
+                    <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                        {{ __('Laporan') }}
+                    </x-nav-link>
                 </div>
             </div>
 

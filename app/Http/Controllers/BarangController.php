@@ -16,7 +16,10 @@ class BarangController extends Controller
     {
         // 'with' berguna untuk mengambil relasi (Kategori & Pemasok)
         // Ini lebih efisien daripada query N+1
-        $barang = Barang::with(['kategori', 'pemasok'])->get();
+        $barang = Barang::with(['kategori', 'pemasok'])
+            ->withSum('masuk', 'jumlah')      // Ini akan jadi 'masuk_sum_jumlah'
+            ->withSum('keluar', 'jumlah')     // Ini akan jadi 'keluar_sum_jumlah'
+            ->get();
         return view('barang.index', compact('barang'));
     }
 
