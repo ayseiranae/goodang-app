@@ -63,7 +63,7 @@ class KategoriController extends Controller
 
         // 2. Update data
         $kategori->update([
-            'kategori' => $request->nama_kategori
+            'kategori' => $request->kategori
         ]);
 
         // 3. Redirect

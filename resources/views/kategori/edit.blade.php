@@ -13,8 +13,8 @@
                     <form action="{{ route('kategori.update', $kategori->id_kategori) }}" method="POST">
                         @csrf
                         @method('PUT') <div>
-                            <label for="nama_kategori" class="block font-medium text-sm text-gray-700">Nama Kategori</label>
-                            <input type="text" name="nama_kategori" id="nama_kategori" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="{{ old('nama_kategori', $kategori->nama_kategori) }}">
+                            <label for="kategori" class="block font-medium text-sm text-gray-700">Nama Kategori</label>
+                            <input type="text" name="kategori" id="kategori" class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="{{ old('kategori', $kategori->kategori) }}">
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
