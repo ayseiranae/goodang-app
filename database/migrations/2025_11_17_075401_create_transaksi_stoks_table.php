@@ -13,13 +13,13 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('transaksi_stok', function (Blueprint $table) {
-            $table->id('id_transaksi'); // Sesuai ERD kamu
+            $table->id('id_transaksi');
 
             // FK ke tabel barang
             $table->foreignId('id_barang')->constrained('barang', 'id_barang');
 
             // FK ke tabel users (pengganti pegawai)
-            $table->foreignId('id_pegawai')->constrained('users', 'id');
+            $table->foreignId('id_pegawai')->constrained('pegawai', 'id_pegawai');
 
             // FK ke tabel pemasok
             $table->foreignId('id_pemasok')->nullable()->constrained('pemasok', 'id_pemasok');
