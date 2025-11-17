@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ProfilPerusahaan;
 
 class LaporanController extends Controller
 {
@@ -24,6 +25,20 @@ class LaporanController extends Controller
     {
         $bulan = $request->input('bulan', date('m'));
         $tahun = $request->input('tahun', date('Y'));
+
+        $profil = ProfilPerusahaan::first();
+
+        $pdf = Pdf::loadView('laporan.pdf', compact(
+            'laporan',
+            'rangkuman',
+            'detail_transaksi',
+            'stok_saat_ini',
+            'bulan',
+            'tahun',
+            'cetakOleh',
+            'cetakWaktu',
+            'profil'
+        ));
 
         $rangkuman = $this->queryRangkumanTransaksi($bulan, $tahun);
         $detail_transaksi = $this->queryDetailTransaksi($bulan, $tahun);

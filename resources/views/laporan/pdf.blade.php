@@ -60,8 +60,24 @@
 
 <body>
 
-    <h1>Laporan Stok Bulanan</h1>
-    <h3>Periode: {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }} {{ $tahun }}</h3>
+    <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 16pt; text-transform: uppercase;">
+            {{ $profil->nama_perusahaan ?? 'NAMA PERUSAHAAN BELUM DISET' }}
+        </h1>
+        <div style="font-size: 10pt; margin-top: 5px;">
+            {{ $profil->alamat ?? 'Alamat belum diset' }}
+        </div>
+        <div style="font-size: 9pt; margin-top: 2px;">
+            Telp: {{ $profil->telepon ?? '-' }} | Email: {{ $profil->email ?? '-' }} | Web:
+            {{ $profil->website ?? '-' }}
+        </div>
+    </div>
+
+    <h2 style="text-align: center; font-size: 14pt; margin-bottom: 20px;">LAPORAN STOK BULANAN</h2>
+
+    <div style="margin-bottom: 20px; font-size: 10pt;">
+        <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }} {{ $tahun }}
+    </div>
 
     <h2>1. Mutasi Stok</h2>
     <table>

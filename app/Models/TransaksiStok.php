@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Pegawai;
 
 class TransaksiStok extends Model
 {
@@ -15,7 +16,7 @@ class TransaksiStok extends Model
     protected $fillable = [
         'id_barang',
         'id_pegawai',
-        'transaksi', 
+        'transaksi',
         'jumlah',
         'keterangan',
         'id_pemasok',
@@ -33,6 +34,6 @@ class TransaksiStok extends Model
 
     public function pegawai()
     {
-        return $this->belongsTo(User::class, 'id_pegawai', 'id');
+        return $this->belongsTo(Pegawai::class, 'id_pegawai', 'id_pegawai');
     }
 }

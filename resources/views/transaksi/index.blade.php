@@ -67,7 +67,8 @@
                             @forelse ($transaksi as $t)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                        {{ $t->created_at->format('d-m-Y H:i') }}</td>
+                                        {{ $t->created_at->format('d-m-Y H:i') }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $t->barang->barang ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if ($t->transaksi == 'masuk')
@@ -83,7 +84,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap font-bold">{{ $t->jumlah }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $t->pegawai->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $t->pegawai->pegawai ?? 'N/A' }}</td>
                                     <td class="px-6 py-4">{{ $t->keterangan }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $t->pemasok->pemasok ?? '-' }}</td>
                                 </tr>
