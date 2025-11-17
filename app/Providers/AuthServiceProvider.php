@@ -24,7 +24,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         Gate::define('isAdmin', function ($pegawai) {
-            // Jika id_jabatan pegawai = 1, dia boleh lewat.
             return $pegawai->id_jabatan == 1;
         });
     }

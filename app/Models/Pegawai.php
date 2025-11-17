@@ -31,22 +31,11 @@ class Pegawai extends Authenticatable
         return $this->password;
     }
 
-    // ==========================================================
-    // !! TAMBAHKAN 2 RELASI BARU DI BAWAH INI !!
-    // ==========================================================
-
-    /**
-     * Relasi: Satu pegawai MILIK SATU Jabatan.
-     */
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
     }
 
-    /**
-     * Relasi: Satu pegawai punya BANYAK Transaksi.
-     * (Ini penting biar kita bisa cek sebelum hapus pegawai)
-     */
     public function transaksiStok()
     {
         return $this->hasMany(TransaksiStok::class, 'id_pegawai', 'id_pegawai');

@@ -4,54 +4,43 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf; // <-- 1. PASTIKAN INI ADA
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 
 class LaporanController extends Controller
 {
-    /**
-     * Tampilkan halaman laporan bulanan.
-     */
     public function index(Request $request)
     {
-        // 2. KITA UBAH INI
         $bulan = $request->input('bulan', date('m'));
         $tahun = $request->input('tahun', date('Y'));
 
-        // Panggil fungsi query terpisah (Query yg tadi kamu duplikat, kita hapus)
-        $laporan = $this->queryLaporan($bulan, $tahun);
+        $laporan = $this->queryRangkumanTransaksi($bulan, $tahun);
 
         $daftarTahun = range(date('Y'), date('Y') - 5);
         return view('laporan.index', compact('laporan', 'bulan', 'tahun', 'daftarTahun'));
     }
 
-    // 3. TAMBAHKAN FUNGSI BARU INI
-    /**
-     * Fungsi baru untuk Download PDF.
-     */
     public function downloadPDF(Request $request)
     {
-        // Ambil filter bulan & tahun
         $bulan = $request->input('bulan', date('m'));
         $tahun = $request->input('tahun', date('Y'));
 
-        // Jalankan query yang sama
-        $laporan = $this->queryLaporan($bulan, $tahun);
+        $rangkuman = $this->queryRangkumanTransaksi($bulan, $tahun);
+        $detail_transaksi = $this->queryDetailTransaksi($bulan, $tahun);
+        $stok_saat_ini = $this->queryStokSaatIni();
+        // $laporan = $this->queryLaporan($bulan, $tahun);
+        $user = Auth::user();
+        $cetakOleh = $user ? $user->username : 'Pengguna Tidak Dikenal';
+        $cetakWaktu = now();
 
-        // Buat nama file
-        $namaFile = 'laporan-gudang-' . $bulan . '-' . $tahun . '.pdf';
+        $namaFile = 'laporan-goodang-' . $bulan . '-' . $tahun . '.pdf';
 
-        // "Muat" view PDF yang tadi kita bikin di Langkah 3
-        $pdf = Pdf::loadView('laporan.pdf', compact('laporan', 'bulan', 'tahun'));
+        $pdf = Pdf::loadView('laporan.pdf', compact('rangkuman', 'detail_transaksi', 'stok_saat_ini', 'bulan', 'tahun', 'cetakOleh', 'cetakWaktu'));
 
-        // Suruh browser download file-nya
         return $pdf->download($namaFile);
     }
 
-    // 4. TAMBAHKAN FUNGSI QUERY INI
-    /**
-     * Private function untuk query (biar nggak nulis 2x)
-     */
-    private function queryLaporan($bulan, $tahun)
+    private function queryRangkumanTransaksi($bulan, $tahun)
     {
         return DB::table('transaksi_stok')
             ->join('barang', 'transaksi_stok.id_barang', '=', 'barang.id_barang')
@@ -62,7 +51,50 @@ class LaporanController extends Controller
                 DB::raw("SUM(CASE WHEN transaksi = 'masuk' THEN jumlah ELSE 0 END) as total_masuk"),
                 DB::raw("SUM(CASE WHEN transaksi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar")
             )
-            ->groupBy('barang.id_barang', 'barang.barang')
+            ->groupBy('barang.barang')
+            ->get();
+    }
+
+    private function queryDetailTransaksi($bulan, $tahun)
+    {
+        return DB::table('transaksi_stok')
+            ->join('barang', 'transaksi_stok.id_barang', '=', 'barang.id_barang')
+            ->join('pegawai', 'transaksi_stok.id_pegawai', '=', 'pegawai.id_pegawai')
+            ->whereMonth('transaksi_stok.created_at', $bulan)
+            ->whereYear('transaksi_stok.created_at', $tahun)
+            ->select(
+                'transaksi_stok.created_at as tanggal',
+                'barang.barang as nama_barang',
+                'transaksi_stok.transaksi',
+                'transaksi_stok.jumlah',
+                'transaksi_stok.keterangan',
+                'pegawai.pegawai as nama_pegawai'
+            )
+            ->orderBy('transaksi_stok.created_at', 'asc')
+            ->get();
+    }
+
+    private function queryStokSaatIni()
+    {
+        $stok_akumulasi = DB::table('transaksi_stok')
+            ->select(
+                'id_barang',
+                DB::raw("SUM(CASE WHEN transaksi = 'masuk' THEN jumlah ELSE 0 END) as total_masuk"),
+                DB::raw("SUM(CASE WHEN transaksi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar")
+            )
+            ->groupBy('id_barang');
+        return DB::table('barang')
+            ->leftJoin(
+                DB::raw('(' . $stok_akumulasi->toSql() . ') as akumulasi'),
+                'barang.id_barang',
+                '=',
+                'akumulasi.id_barang'
+            )
+            ->select(
+                'barang.barang as nama_barang',
+                DB::raw('IFNULL(akumulasi.total_masuk, 0) - IFNULL(akumulasi.total_keluar, 0) as stok_saat_ini')
+            )
+            ->addBinding($stok_akumulasi->getBindings())
             ->get();
     }
 }

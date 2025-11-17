@@ -99,7 +99,6 @@
     </div>
 
     <script>
-        // JavaScript simpel untuk show/hide dropdown Pemasok
         function togglePemasok(tipe) {
             var div = document.getElementById('pemasok_div');
             if (tipe === 'masuk') {

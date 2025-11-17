@@ -40,7 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('pegawai', PegawaiController::class)
         ->middleware('can:isAdmin');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])->name('laporan.pdf');
+    Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])
+        ->middleware('auth')
+        ->name('laporan.pdf');
 });
 
 require __DIR__ . '/auth.php';

@@ -9,12 +9,9 @@ class Kategori extends Model
 {
     use HasFactory;
 public $timestamps = false;
-    // Tentukan nama tabelnya secara manual
     protected $table = 'kategori';
 
-    // Tentukan Primary Key-nya
     protected $primaryKey = 'id_kategori';
 
-    // Kolom yang boleh diisi
     protected $fillable = ['kategori'];
 }

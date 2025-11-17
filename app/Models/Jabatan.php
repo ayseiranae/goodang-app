@@ -9,7 +9,6 @@ class Jabatan extends Model
 {
     use HasFactory;
 
-    // Info tabel kita
     protected $table = 'jabatan';
     protected $primaryKey = 'id_jabatan';
     public $timestamps = false;
