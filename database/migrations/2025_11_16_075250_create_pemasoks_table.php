@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->id('id_pemasok'); // Sesuai ERD kamu
             $table->string('nama_pemasok', 45);
             $table->string('kontak', 15);
-            $table->timestamps();
         });
     }
     /**

@@ -22,7 +22,6 @@ return new class extends Migration {
             $table->string('barang', 45);
             $table->text('deskripsi');
             $table->string('satuan', 10); // Ganti dari enum, lebih fleksibel
-            $table->timestamps();
         });
     }
 
