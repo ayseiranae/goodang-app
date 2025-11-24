@@ -27,30 +27,29 @@ class LaporanController extends Controller
         $tahun = $request->input('tahun', date('Y'));
 
         $profil = ProfilPerusahaan::first();
+        $rangkuman = $this->queryRangkumanTransaksi($bulan, $tahun);
+        $detail_transaksi = $this->queryDetailTransaksi($bulan, $tahun);
+        $stok_saat_ini = $this->queryStokSaatIni();
+        $laporan = $this->queryRangkumanTransaksi($bulan, $tahun);
+        $user = Auth::user();
+        $cetakOleh = $user ? $user->username : 'Pengguna Tidak Dikenal';
+        $cetakWaktu = now();
+        $periode = \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') . ' ' . $tahun;
+
+        $namaFile = 'laporan-goodang-' . $bulan . '-' . $tahun . '.pdf';
 
         $pdf = Pdf::loadView('laporan.pdf', compact(
+            'profil',
             'laporan',
             'rangkuman',
             'detail_transaksi',
             'stok_saat_ini',
             'bulan',
             'tahun',
+            'periode',
             'cetakOleh',
-            'cetakWaktu',
-            'profil'
+            'cetakWaktu'
         ));
-
-        $rangkuman = $this->queryRangkumanTransaksi($bulan, $tahun);
-        $detail_transaksi = $this->queryDetailTransaksi($bulan, $tahun);
-        $stok_saat_ini = $this->queryStokSaatIni();
-        // $laporan = $this->queryLaporan($bulan, $tahun);
-        $user = Auth::user();
-        $cetakOleh = $user ? $user->username : 'Pengguna Tidak Dikenal';
-        $cetakWaktu = now();
-
-        $namaFile = 'laporan-goodang-' . $bulan . '-' . $tahun . '.pdf';
-
-        $pdf = Pdf::loadView('laporan.pdf', compact('rangkuman', 'detail_transaksi', 'stok_saat_ini', 'bulan', 'tahun', 'cetakOleh', 'cetakWaktu'));
 
         return $pdf->download($namaFile);
     }

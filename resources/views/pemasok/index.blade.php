@@ -32,7 +32,7 @@
                                     Nama Pemasok</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Kontak</th> <!-- !! INI YANG DIBENERIN !! -->
+                                    Kontak</th>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Aksi</th>
@@ -42,7 +42,7 @@
                             @foreach ($pemasok as $p)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $p->id_pemasok }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $p->pemasok }}</td> <!-- Sesuai ERD -->
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $p->pemasok }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $p->kontak }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('pemasok.edit', $p->id_pemasok) }}"
