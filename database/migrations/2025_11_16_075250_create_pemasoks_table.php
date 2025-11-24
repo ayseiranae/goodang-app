@@ -13,8 +13,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('pemasok', function (Blueprint $table) {
-            $table->id('id_pemasok'); // Sesuai ERD kamu
-            $table->string('nama_pemasok', 45);
+            $table->id('id_pemasok');
+            $table->string('pemasok', 45);
             $table->string('kontak', 15);
         });
     }
