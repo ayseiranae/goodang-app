@@ -13,6 +13,7 @@ class TransaksiStokController extends Controller
     public function index(Request $request)
     {
         $tanggal = $request->input('tanggal');
+        $search = $request->input('search');
 
         $query = TransaksiStok::with(['barang', 'pegawai', 'pemasok'])
             ->orderBy('created_at', 'desc');
@@ -21,9 +22,19 @@ class TransaksiStokController extends Controller
             $query->whereDate('created_at', $tanggal);
         }
 
+        if ($search) {
+            $query->whereHas('barang', function ($q) use ($search) {
+                $q->where('barang', 'like', '%' . $search . '%');
+            });
+        }
+
         $transaksi = $query->get();
 
-        return view('transaksi.index', compact('transaksi', 'tanggal'));
+        if ($request->ajax()) {
+            return view('transaksi.table_body', compact('transaksi', 'tanggal'))->render();
+        }
+
+        return view('transaksi.index', compact('transaksi', 'tanggal', 'search'));
     }
 
     public function create()
