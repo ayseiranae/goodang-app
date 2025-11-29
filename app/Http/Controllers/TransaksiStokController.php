@@ -6,7 +6,12 @@ use App\Models\TransaksiStok;
 use App\Models\Barang;
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
+<<<<<<< Updated upstream
 use Illuminate\Support\Facades\Auth; // <-- PENTING, untuk ambil ID pegawai
+=======
+use Illuminate\Support\Facades\Auth;
+use App\Events\TransaksiCreated;
+>>>>>>> Stashed changes
 
 class TransaksiStokController extends Controller
 {
@@ -55,7 +60,11 @@ class TransaksiStokController extends Controller
     {
         $request->validate([
             'id_barang' => 'required|exists:barang,id_barang',
+<<<<<<< Updated upstream
             'transaksi' => 'required|in:masuk,keluar', // Pastikan valuenya cuma 2 ini
+=======
+            'transaksi' => 'required|in:masuk,keluar',
+>>>>>>> Stashed changes
             'jumlah' => 'required|integer|min:1',
             'keterangan' => 'required|string',
             'id_pemasok' => 'nullable|exists:pemasok,id_pemasok',
@@ -69,15 +78,69 @@ class TransaksiStokController extends Controller
             return back()->withInput()->withErrors(['id_pemasok' => 'Pemasok wajib diisi untuk barang MASUK.']);
         }
 
-        TransaksiStok::create([
+        // Validasi stok keluar
+        if ($request->transaksi == 'keluar') {
+            $barang = Barang::findOrFail($request->id_barang);
+            if ($barang->stok < $request->jumlah) {
+                return back()->withInput()->withErrors(['jumlah' => 'Stok tidak mencukupi untuk transaksi keluar.']);
+            }
+        }
+
+        $transaksi = TransaksiStok::create([
             'id_barang' => $request->id_barang,
+<<<<<<< Updated upstream
             'id_pegawai' => Auth::id(), // <-- ID pegawai yg lagi login
+=======
+            'id_pegawai' => Auth::id(),
+>>>>>>> Stashed changes
             'transaksi' => $request->transaksi,
             'jumlah' => $request->jumlah,
             'keterangan' => $request->keterangan,
             'id_pemasok' => $idPemasok,
         ]);
 
+        // 🔔 Broadcast event supaya dashboard auto update
+        event(new TransaksiCreated($transaksi));
+
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dicatat.');
+    }
+
+    public function edit($id)
+    {
+        $transaksi = TransaksiStok::findOrFail($id);
+        $barang = Barang::all();
+        $pemasok = Pemasok::all();
+        return view('transaksi.edit', compact('transaksi', 'barang', 'pemasok'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'id_barang' => 'required|exists:barang,id_barang',
+            'transaksi' => 'required|in:masuk,keluar',
+            'jumlah' => 'required|integer|min:1',
+            'keterangan' => 'required|string',
+            'id_pemasok' => 'nullable|exists:pemasok,id_pemasok',
+        ]);
+
+        $transaksi = TransaksiStok::findOrFail($id);
+
+        $transaksi->update([
+            'id_barang' => $request->id_barang,
+            'transaksi' => $request->transaksi,
+            'jumlah' => $request->jumlah,
+            'keterangan' => $request->keterangan,
+            'id_pemasok' => $request->id_pemasok,
+        ]);
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = TransaksiStok::findOrFail($id);
+        $transaksi->delete();
+
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 }
