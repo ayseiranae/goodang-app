@@ -59,24 +59,29 @@
 </head>
 
 <body>
-
-    <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px;">
-        <h1 style="margin: 0; font-size: 16pt; text-transform: uppercase;">
-            {{ $profil->nama_perusahaan ?? 'NAMA PERUSAHAAN BELUM DISET' }}
+    <div style="text-align: center; margin-bottom: 25px;">
+        <h1 style="margin: 0; font-size: 20pt; font-weight: 700; letter-spacing: 1px;">
+            GOODANG
         </h1>
-        <div style="font-size: 10pt; margin-top: 5px;">
-            {{ $profil->alamat ?? 'Alamat belum diset' }}
+
+        <div style="font-size: 11pt; margin-top: 3px; font-weight: 500;">
+            Jalan Awan, Malang
         </div>
-        <div style="font-size: 9pt; margin-top: 2px;">
-            Telp: {{ $profil->telepon ?? '-' }} | Email: {{ $profil->email ?? '-' }} | Web:
-            {{ $profil->website ?? '-' }}
+
+        <div style="font-size: 10pt; margin-top: 2px;">
+            Telp: +62 82233445566 &nbsp; | &nbsp; Email: goodang@gmail.com
         </div>
+
+        <div style="border-bottom: 3px solid #000; width: 95%; margin: 12px auto 0 auto;"></div>
     </div>
+
+
 
     <h2 style="text-align: center; font-size: 14pt; margin-bottom: 20px;">LAPORAN STOK BULANAN</h2>
 
     <div style="margin-bottom: 20px; font-size: 10pt;">
-        <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }} {{ $tahun }}
+        <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month($bulan)->translatedFormat('F') }}
+        {{ $tahun }}
     </div>
 
     <h2>1. Mutasi Stok</h2>
@@ -111,9 +116,8 @@
     </table>
 
     <div style="page-break-after: always"></div>
-
+    <!-- Bagian Detail Transaksi -->
     <h2>2. Detail Transaksi</h2>
-
     <table>
         <thead>
             <tr>
@@ -126,7 +130,8 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($detail_transaksi as $detail)
+            @forelse ($detailTransaksi as $detail)
+                <!-- ✅ gunakan camelCase -->
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($detail->tanggal)->translatedFormat('d M Y H:i') }}</td>
                     <td>{{ $detail->nama_barang }}</td>
@@ -147,38 +152,40 @@
                 </tr>
             @endforelse
         </tbody>
+    </table>
 
-        <div style="page-break-after: always"></div>
-
-        <h2>3. Stok Saat Ini</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 70%;">Nama Barang</th>
-                    <th style="width: 30%;">Total Stok Tersisa</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($stok_saat_ini as $stok)
-                    @if ($stok->stok_saat_ini > 0)
-                        <tr>
-                            <td>{{ $stok->nama_barang }}</td>
-                            <td class="text-center">{{ $stok->stok_saat_ini }}</td>
-                        </tr>
-                    @endif
-                @empty
+    <!-- Bagian Stok Saat Ini -->
+    <h2>3. Stok Saat Ini</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 70%;">Nama Barang</th>
+                <th style="width: 30%;">Total Stok Tersisa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($stokSaatIni as $stok)
+                <!-- ✅ gunakan camelCase -->
+                @if ($stok->stok_saat_ini > 0)
                     <tr>
-                        <td colspan="2" class="text-center" style="font-style: italic;">
-                            Tidak ada data stok barang yang tersedia.
-                        </td>
+                        <td>{{ $stok->nama_barang }}</td>
+                        <td class="text-center">{{ $stok->stok_saat_ini }}</td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
-        <div class="footer-info">
-            Dicetak oleh: {{ $cetakOleh }}<br>
-            Tanggal/Waktu Cetak: {{ $cetakWaktu->translatedFormat('d F Y H:i:s') }}
-        </div>
+                @endif
+            @empty
+                <tr>
+                    <td colspan="2" class="text-center" style="font-style: italic;">
+                        Tidak ada data stok barang yang tersedia.
+                    </td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div class="footer-info">
+        Dicetak oleh: {{ $cetakOleh }}<br>
+        Tanggal Cetak: {{ $cetakWaktu->translatedFormat('d F Y H:i:s') }}
+    </div>
 
 </body>
 

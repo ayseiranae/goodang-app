@@ -11,22 +11,19 @@ use Carbon\Carbon;
 
 class LaporanController extends Controller
 {
-    /**
-     * Halaman utama laporan rangkuman bulanan
-     */
     public function index(Request $request)
     {
         $bulan = $request->input('bulan', date('m'));
         $tahun = $request->input('tahun', date('Y'));
 
-        $laporan     = $this->queryRangkumanTransaksi($bulan, $tahun);
+        $laporan = $this->queryRangkumanTransaksi($bulan, $tahun);
         $daftarTahun = range(date('Y'), date('Y') - 5);
 
         return view('laporan.index', compact('laporan', 'bulan', 'tahun', 'daftarTahun'));
     }
 
     /**
-     * Download laporan dalam bentuk PDF
+     * Method untuk download laporan PDF
      */
     public function downloadPDF(Request $request)
     {
@@ -48,8 +45,8 @@ class LaporanController extends Controller
         $pdf = Pdf::loadView('laporan.pdf', compact(
             'profil',
             'rangkuman',
-            'detailTransaksi',   // camelCase
-            'stokSaatIni',       // camelCase
+            'detailTransaksi',
+            'stokSaatIni',
             'bulan',
             'tahun',
             'periode',
@@ -57,13 +54,9 @@ class LaporanController extends Controller
             'cetakWaktu'
         ));
 
-
         return $pdf->download($namaFile);
     }
 
-    /**
-     * Query rangkuman transaksi stok per barang
-     */
     private function queryRangkumanTransaksi($bulan, $tahun)
     {
         return DB::table('transaksi_stok')
@@ -79,9 +72,6 @@ class LaporanController extends Controller
             ->get();
     }
 
-    /**
-     * Query detail transaksi stok
-     */
     private function queryDetailTransaksi($bulan, $tahun)
     {
         return DB::table('transaksi_stok')
@@ -101,9 +91,6 @@ class LaporanController extends Controller
             ->get();
     }
 
-    /**
-     * Query stok barang saat ini
-     */
     private function queryStokSaatIni()
     {
         $stokAkumulasi = DB::table('transaksi_stok')
