@@ -25,20 +25,24 @@
                         <!-- Nama Pegawai -->
                         <div>
                             <label for="pegawai" class="block font-medium text-sm text-gray-700">Nama Pegawai</label>
-                            <input type="text" name="pegawai" id="pegawai" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('pegawai') }}" required>
+                            <input type="text" name="pegawai" id="pegawai"
+                                class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('pegawai') }}" required>
                         </div>
 
                         <!-- Username -->
                         <div class="mt-4">
-                            <label for="username" class="block font-medium text-sm text-gray-700">Username (untuk login)</label>
-                            <input type="text" name="username" id="username" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('username') }}" required>
+                            <label for="username" class="block font-medium text-sm text-gray-700">Username (untuk
+                                login)</label>
+                            <input type="text" name="username" id="username"
+                                class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('username') }}" required>
                         </div>
 
                         <!-- Dropdown Jabatan -->
                         <div class="mt-4">
                             <label for="id_jabatan" class="block font-medium text-sm text-gray-700">Jabatan</label>
-                            <select name="id_jabatan" id="id_jabatan" class="block mt-1 w-full rounded-md shadow-sm" required>
-                                <option value="">-- Pilih Jabatan --</option>
+                            <select name="id_jabatan" id="id_jabatan" class="block mt-1 w-full rounded-md shadow-sm"
+                                required>
+                                <option value="">Pilih Jabatan</option>
                                 @foreach ($jabatan as $j)
                                     <option value="{{ $j->id_jabatan }}" {{ old('id_jabatan') == $j->id_jabatan ? 'selected' : '' }}>
                                         {{ $j->jabatan }}
@@ -50,18 +54,23 @@
                         <!-- Password -->
                         <div class="mt-4">
                             <label for="password" class="block font-medium text-sm text-gray-700">Password</label>
-                            <input type="password" name="password" id="password" class="block mt-1 w-full rounded-md shadow-sm" required>
+                            <input type="password" name="password" id="password"
+                                class="block mt-1 w-full rounded-md shadow-sm" required>
                         </div>
 
                         <!-- Konfirmasi Password -->
                         <div class="mt-4">
-                            <label for="password_confirmation" class="block font-medium text-sm text-gray-700">Konfirmasi Password</label>
-                            <input type="password" name="password_confirmation" id="password_confirmation" class="block mt-1 w-full rounded-md shadow-sm" required>
+                            <label for="password_confirmation"
+                                class="block font-medium text-sm text-gray-700">Konfirmasi Password</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation"
+                                class="block mt-1 w-full rounded-md shadow-sm" required>
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('pegawai.index') }}" class="text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest">Simpan</button>
+                            <a href="{{ route('pegawai.index') }}"
+                                class="text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
+                            <button type="submit"
+                                class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest">Simpan</button>
                         </div>
                     </form>
 

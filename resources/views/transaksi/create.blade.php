@@ -28,7 +28,7 @@
                                 Transaksi</label>
                             <select name="transaksi" id="transaksi" class="block mt-1 w-full rounded-md shadow-sm"
                                 onchange="togglePemasok(this.value)">
-                                <option value="">-- Pilih Tipe --</option>
+                                <option value="">None</option>
                                 <option value="masuk" {{ old('transaksi') == 'masuk' ? 'selected' : '' }}>Barang Masuk
                                 </option>
                                 <option value="keluar" {{ old('transaksi') == 'keluar' ? 'selected' : '' }}>Barang Keluar
@@ -39,7 +39,7 @@
                         <div class="mt-4">
                             <label for="id_barang" class="block font-medium text-sm text-gray-700">Barang</label>
                             <select name="id_barang" id="id_barang" class="block mt-1 w-full rounded-md shadow-sm">
-                                <option value="">-- Pilih Barang --</option>
+                                <option value="">None</option>
 
                                 @foreach ($barang as $b)
                                     @php
@@ -71,7 +71,7 @@
                             <label for="id_pemasok" class="block font-medium text-sm text-gray-700">Pemasok (Wajib untuk
                                 Barang Masuk)</label>
                             <select name="id_pemasok" id="id_pemasok" class="block mt-1 w-full rounded-md shadow-sm">
-                                <option value="">-- Pilih Pemasok --</option>
+                                <option value="">None</option>
                                 @foreach ($pemasok as $pem)
                                     <option value="{{ $pem->id_pemasok }}" {{ old('id_pemasok') == $pem->id_pemasok ? 'selected' : '' }}>
                                         {{ $pem->pemasok }}
