@@ -16,14 +16,15 @@
                         <div>
                             <label for="kategori" class="block font-medium text-sm text-gray-700">Kategori</label>
                             <input type="text" name="kategori" id="kategori"
-                                class="block mt-1 w-full rounded-md shadow-sm"
+                                class="block mt-1 w-full rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                                 value="{{ $kategori->kategori }}">
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('kategori.index') }}" class="text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
+                            <a href="{{ route('kategori.index') }}"
+                                class="text-sm text-gray-600 hover:text-gray-900 mr-4">Batal</a>
                             <button type="submit"
-                                class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md">
+                                class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700">
                                 Update
                             </button>
                         </div>
@@ -35,28 +36,42 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        $('#form-edit-kategori').on('submit', function(e) {
+        $('#form-edit-kategori').on('submit', function (e) {
             e.preventDefault();
 
             $.ajax({
                 url: "{{ route('kategori.update.ajax', $kategori->id_kategori) }}",
                 method: "POST",
                 data: $(this).serialize(),
-                success: function(res) {
-                    alert(res.message);
-                    window.location.href = "{{ route('kategori.index') }}";
+                success: function (res) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: res.message,
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.href = "{{ route('kategori.index') }}";
+                    });
                 },
-                error: function(err) {
+                error: function (err) {
                     let errors = err.responseJSON.errors;
                     let msg = "";
 
-                    $.each(errors, function(key, val) {
-                        msg += val[0] + "\n";
+                    $.each(errors, function (key, val) {
+                        msg += val[0] + "<br>";
                     });
 
-                    alert(msg);
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: msg,
+                        showConfirmButton: true
+                    });
                 }
             });
         });

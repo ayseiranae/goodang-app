@@ -10,18 +10,8 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
 
-                    @if ($errors->any())
-                        <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
                     <form id="form-kategori" action="{{ route('kategori.store.ajax') }}" method="POST">
-                     @csrf
+                        @csrf
                         <div>
                             <label for="kategori" class="block font-medium text-sm text-gray-700">Kategori</label>
                             <input type="text" name="kategori" id="kategori"
@@ -47,31 +37,45 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-    $('#form-kategori').on('submit', function(e) {
-        e.preventDefault();
+        $('#form-kategori').on('submit', function (e) {
+            e.preventDefault();
 
-        $.ajax({
-            url: "{{ route('kategori.store.ajax') }}",
-            method: "POST",
-            data: $(this).serialize(),
-            success: function(res) {
-                if (res.success) {
-                    alert(res.message);
-                    window.location.href = "{{ route('kategori.index') }}";
+            $.ajax({
+                url: "{{ route('kategori.store.ajax') }}",
+                method: "POST",
+                data: $(this).serialize(),
+                success: function (res) {
+                    if (res.success) {
+                        Swal.fire({
+                            position: 'center',
+                            icon: 'success',
+                            title: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = "{{ route('kategori.index') }}";
+                        });
+                    }
+                },
+                error: function (err) {
+                    let errors = err.responseJSON.errors;
+                    let message = "";
+
+                    $.each(errors, function (key, val) {
+                        message += val[0] + "<br>";
+                    });
+
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'error',
+                        title: 'Gagal!',
+                        html: message,
+                        showConfirmButton: true
+                    });
                 }
-            },
-            error: function(err) {
-                let errors = err.responseJSON.errors;
-                let message = "";
-
-                $.each(errors, function(key, val) {
-                    message += val[0] + "\n";
-                });
-
-                alert(message);
-            }
+            });
         });
-    });
     </script>
 </x-app-layout>

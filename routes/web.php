@@ -30,23 +30,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // kategori
     Route::resource('kategori', KategoriController::class);
-    Route::post('kategori/store-ajax', [KategoriController::class, 'storeAjax'])
-    ->name('kategori.store.ajax');
-    Route::post('kategori/update-ajax/{kategori}', [KategoriController::class, 'updateAjax'])
-    ->name('kategori.update.ajax');
+    Route::post('/kategori/store-ajax', [KategoriController::class, 'storeAjax'])->name('kategori.store.ajax');
+    Route::post('/kategori/{id}/update-ajax', [KategoriController::class, 'updateAjax'])->name('kategori.update.ajax');
+    Route::post('/kategori/{id}/delete-ajax', [KategoriController::class, 'deleteAjax'])->name('kategori.delete.ajax');
+    // pemasok
     Route::resource('pemasok', PemasokController::class);
+
+    // barang
     Route::resource('barang', BarangController::class);
     Route::get('barang/data', [BarangController::class, 'getData'])->name('barang.data');
     Route::get('transaksi', [TransaksiStokController::class, 'index'])->name('transaksi.index');
     Route::post('barang/store-ajax', [BarangController::class, 'storeAjax'])
-    ->name('barang.store.ajax');
+        ->name('barang.store.ajax');
     Route::get('transaksi/create', [TransaksiStokController::class, 'create'])->name('transaksi.create');
     Route::post('transaksi', [TransaksiStokController::class, 'store'])->name('transaksi.store');
     Route::post('transaksi/store-ajax', [TransaksiStokController::class, 'storeAjax'])
-    ->name('transaksi.store.ajax');
+        ->name('transaksi.store.ajax');
     Route::get('transaksi/barang-search', [TransaksiStokController::class, 'searchBarang'])
-    ->name('transaksi.barang.search');
+        ->name('transaksi.barang.search');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])
         ->middleware('auth')
