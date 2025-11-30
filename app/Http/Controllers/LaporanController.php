@@ -56,16 +56,33 @@ class LaporanController extends Controller
 
     private function queryRangkumanTransaksi($bulan, $tahun)
     {
+        $stokAkumulasi = DB::table('transaksi_stok')
+            ->select(
+                'id_barang',
+                DB::raw("SUM(CASE WHEN transaksi = 'masuk' THEN jumlah ELSE 0 END) as total_masuk_all"),
+                DB::raw("SUM(CASE WHEN transaksi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar_all")
+            )
+            ->groupBy('id_barang');
+
         return DB::table('transaksi_stok')
             ->join('barang', 'transaksi_stok.id_barang', '=', 'barang.id_barang')
+            ->leftJoin(
+                DB::raw('(' . $stokAkumulasi->toSql() . ') as akumulasi'),
+                'barang.id_barang',
+                '=',
+                'akumulasi.id_barang'
+            )
             ->whereMonth('transaksi_stok.created_at', $bulan)
             ->whereYear('transaksi_stok.created_at', $tahun)
             ->select(
+                'barang.id_barang',
                 'barang.barang as nama_barang',
                 DB::raw("SUM(CASE WHEN transaksi = 'masuk' THEN jumlah ELSE 0 END) as total_masuk"),
-                DB::raw("SUM(CASE WHEN transaksi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar")
+                DB::raw("SUM(CASE WHEN transaksi = 'keluar' THEN jumlah ELSE 0 END) as total_keluar"),
+                DB::raw('IFNULL(akumulasi.total_masuk_all, 0) - IFNULL(akumulasi.total_keluar_all, 0) as stok_saat_ini')
             )
-            ->groupBy('barang.barang')
+            ->addBinding($stokAkumulasi->getBindings())
+            ->groupBy('barang.id_barang', 'barang.barang', 'akumulasi.total_masuk_all', 'akumulasi.total_keluar_all')
             ->get();
     }
 
