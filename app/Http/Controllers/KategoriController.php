@@ -31,12 +31,29 @@ class KategoriController extends Controller
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
+    public function storeAjax(Request $request)
+    {
+        $request->validate([
+            'kategori' => 'required|string|max:45'
+        ]);
+
+        $kategori = Kategori::create([
+            'kategori' => $request->kategori
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil ditambahkan!',
+            'data' => $kategori
+        ]);
+    }
+
     public function edit(Kategori $kategori)
     {
         return view('kategori.edit', compact('kategori'));
     }
 
-    public function update(Request $request, Kategori $kategori)
+    public function updateAjax(Request $request, Kategori $kategori)
     {
         $request->validate([
             'kategori' => 'required|string|max:45'
@@ -46,7 +63,10 @@ class KategoriController extends Controller
             'kategori' => $request->kategori
         ]);
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil diperbarui via AJAX!'
+        ]);
     }
 
     public function destroy(Kategori $kategori)
