@@ -41,7 +41,15 @@ Route::middleware('auth')->group(function () {
 
     // barang
     Route::resource('barang', BarangController::class);
-    Route::get('barang/data', [BarangController::class, 'getData'])->name('barang.data');
+
+    // Route AJAX Barang
+    Route::get('/barang-data', [BarangController::class, 'getData'])->name('barang.data');
+    Route::post('/barang/store-ajax', [BarangController::class, 'storeAjax'])->name('barang.store.ajax');
+    Route::post('/barang/{id}/update-ajax', [BarangController::class, 'updateAjax'])->name('barang.update.ajax');
+    Route::post('/barang/{id}/delete-ajax', [BarangController::class, 'deleteAjax'])->name('barang.delete.ajax');
+    Route::get('/kategori-data', [KategoriController::class, 'getData'])->name('kategori.data');
+    Route::get('/pemasok-data', [PemasokController::class, 'getData'])->name('pemasok.data');
+
     Route::get('transaksi', [TransaksiStokController::class, 'index'])->name('transaksi.index');
     Route::post('barang/store-ajax', [BarangController::class, 'storeAjax'])
         ->name('barang.store.ajax');

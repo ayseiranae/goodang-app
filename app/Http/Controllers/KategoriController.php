@@ -104,4 +104,10 @@ class KategoriController extends Controller
             'message' => 'Kategori berhasil dihapus!'
         ]);
     }
+
+    public function getData()
+    {
+        $kategori = Kategori::all();
+        return response()->json($kategori);
+    }
 }

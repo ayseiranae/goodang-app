@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pemasok; 
+use App\Models\Pemasok;
 use Illuminate\Http\Request;
 
 class PemasokController extends Controller
@@ -10,12 +10,12 @@ class PemasokController extends Controller
     public function index()
     {
         $pemasok = Pemasok::all();
-        return view('pemasok.index', compact('pemasok')); 
+        return view('pemasok.index', compact('pemasok'));
     }
 
     public function create()
     {
-        return view('pemasok.create'); 
+        return view('pemasok.create');
     }
 
     public function store(Request $request)
@@ -33,12 +33,12 @@ class PemasokController extends Controller
         return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil ditambahkan.');
     }
 
-    public function edit(Pemasok $pemasok) 
+    public function edit(Pemasok $pemasok)
     {
-        return view('pemasok.edit', compact('pemasok')); 
+        return view('pemasok.edit', compact('pemasok'));
     }
 
-    public function update(Request $request, Pemasok $pemasok) 
+    public function update(Request $request, Pemasok $pemasok)
     {
         $request->validate([
             'pemasok' => 'required|string|max:45',
@@ -56,6 +56,12 @@ class PemasokController extends Controller
     public function destroy(Pemasok $pemasok)
     {
         $pemasok->delete();
-        return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil dihapus.'); 
+        return redirect()->route('pemasok.index')->with('success', 'Pemasok berhasil dihapus.');
+    }
+
+    public function getData()
+    {
+        $pemasok = Pemasok::all();
+        return response()->json($pemasok);
     }
 }
