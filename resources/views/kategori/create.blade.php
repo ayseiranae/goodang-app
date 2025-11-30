@@ -20,8 +20,8 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('kategori.store') }}" method="POST">
-                        @csrf
+                    <form id="form-kategori" action="{{ route('kategori.store.ajax') }}" method="POST">
+                     @csrf
                         <div>
                             <label for="kategori" class="block font-medium text-sm text-gray-700">Kategori</label>
                             <input type="text" name="kategori" id="kategori"
@@ -45,4 +45,33 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $('#form-kategori').on('submit', function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "{{ route('kategori.store.ajax') }}",
+            method: "POST",
+            data: $(this).serialize(),
+            success: function(res) {
+                if (res.success) {
+                    alert(res.message);
+                    window.location.href = "{{ route('kategori.index') }}";
+                }
+            },
+            error: function(err) {
+                let errors = err.responseJSON.errors;
+                let message = "";
+
+                $.each(errors, function(key, val) {
+                    message += val[0] + "\n";
+                });
+
+                alert(message);
+            }
+        });
+    });
+    </script>
 </x-app-layout>

@@ -54,38 +54,77 @@
                                     Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach ($barang as $b)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $b->id_barang }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $b->barang }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $b->kategori->kategori ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $b->pemasok->pemasok ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $b->satuan }}</td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap font-bold text-lg">
-                                        {{ ($b->masuk_sum_jumlah ?? 0) - ($b->keluar_sum_jumlah ?? 0) }}
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <a href="{{ route('barang.edit', $b->id_barang) }}"
-                                            class="text-indigo-600 hover:text-indigo-900">Edit</a>
-
-                                        <form action="{{ route('barang.destroy', $b->id_barang) }}" method="POST"
-                                            class="inline" onsubmit="return confirm('Yakin mau hapus?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="text-red-600 hover:text-red-900 ml-4">Hapus</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
+                        <tbody id="tbody-barang" class="bg-white divide-y divide-gray-200">
                         </tbody>
+
                     </table>
 
                 </div>
             </div>
         </div>
     </div>
+
+     <script>
+    $(document).ready(function () {
+        loadBarang();
+
+        function loadBarang() {
+            $.ajax({
+                url: "{{ route('barang.data') }}",
+                method: "GET",
+                success: function (data) {
+                    let rows = "";
+
+                    data.forEach((item) => {
+                        let stok = (item.masuk_sum_jumlah ?? 0) - (item.keluar_sum_jumlah ?? 0);
+
+                        rows += `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">${item.id_barang}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${item.barang}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${item.kategori?.kategori ?? 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${item.pemasok?.pemasok ?? 'N/A'}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${item.satuan}</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-bold text-lg">${stok}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="/barang/${item.id_barang}/edit"
+                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
+
+                                    <button class="text-red-600 hover:text-red-900 ml-4 btn-delete"
+                                            data-id="${item.id_barang}">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                    $("#tbody-barang").html(rows);
+                }
+            });
+        }
+    });
+
+    $(document).on("click", ".btn-delete", function () {
+        let id = $(this).data("id");
+
+        if (!confirm("Yakin mau hapus?")) return;
+
+        $.ajax({
+            url: "/barang/" + id,
+            type: "DELETE",
+            data: {
+                _token: "{{ csrf_token() }}"
+            },
+            success: function (res) {
+                alert("Barang berhasil dihapus!");
+                loadBarang(); 
+            },
+            error: function () {
+                alert("Barang tidak bisa dihapus, mungkin sudah dipakai di transaksi!");
+            }
+        });
+    });
+
+    </script>
 </x-app-layout>

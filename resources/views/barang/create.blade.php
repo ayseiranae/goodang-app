@@ -21,7 +21,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('barang.store') }}" method="POST">
+                   <form id="form-barang" action="{{ route('barang.store') }}" method="POST">
                         @csrf
                         <!-- Nama Barang -->
                         <div>
@@ -88,4 +88,33 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $('#form-barang').on('submit', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "{{ route('barang.store.ajax') }}",
+            method: "POST",
+            data: $(this).serialize(),
+            success: function(res) {
+                if(res.success) {
+                    alert(res.message);
+                    window.location.href = "{{ route('barang.index') }}";
+                }
+            },
+            error: function(err) {
+                let errors = err.responseJSON.errors;
+                let message = "";
+
+                $.each(errors, function(key, val) {
+                    message += val[0] + "\n";
+                });
+
+                alert(message);
+            }
+        });
+    });
+    </script>
 </x-app-layout>

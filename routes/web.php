@@ -31,16 +31,26 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('kategori', KategoriController::class);
+    Route::post('kategori/store-ajax', [KategoriController::class, 'storeAjax'])
+    ->name('kategori.store.ajax');
+    Route::post('kategori/update-ajax/{kategori}', [KategoriController::class, 'updateAjax'])
+    ->name('kategori.update.ajax');
     Route::resource('pemasok', PemasokController::class);
     Route::resource('barang', BarangController::class);
+    Route::get('barang/data', [BarangController::class, 'getData'])->name('barang.data');
     Route::get('transaksi', [TransaksiStokController::class, 'index'])->name('transaksi.index');
+    Route::post('barang/store-ajax', [BarangController::class, 'storeAjax'])
+    ->name('barang.store.ajax');
     Route::get('transaksi/create', [TransaksiStokController::class, 'create'])->name('transaksi.create');
     Route::post('transaksi', [TransaksiStokController::class, 'store'])->name('transaksi.store');
+    Route::post('transaksi/store-ajax', [TransaksiStokController::class, 'storeAjax'])
+    ->name('transaksi.store.ajax');
+    Route::get('transaksi/barang-search', [TransaksiStokController::class, 'searchBarang'])
+    ->name('transaksi.barang.search');
     Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])
         ->middleware('auth')
         ->name('laporan.pdf');
-
     Route::middleware('can:isAdmin')->group(function () {
         Route::resource('pegawai', PegawaiController::class);
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
