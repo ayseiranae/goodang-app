@@ -9,7 +9,7 @@ use App\Http\Controllers\TransaksiStokController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\SettingController;
-
+use App\Http\Controllers\DashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,9 +23,20 @@ use App\Http\Controllers\SettingController;
 
 Route::redirect('/', '/login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboard/data', [DashboardController::class, 'data'])
+        ->name('dashboard.data');
+
+    Route::get('/dashboard/search-barang', [DashboardController::class, 'searchBarang'])
+        ->name('dashboard.search-barang');
+});
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -38,7 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/kategori/{id}/delete-ajax', [KategoriController::class, 'deleteAjax'])->name('kategori.delete.ajax');
     // pemasok
     Route::resource('pemasok', PemasokController::class);
+    Route::post('/pemasok/store-ajax', [PemasokController::class, 'storeAjax'])
+        ->name('pemasok.store.ajax');
 
+    Route::post('/pemasok/{id}/update-ajax', [PemasokController::class, 'updateAjax'])
+        ->name('pemasok.update.ajax');
+
+    Route::post('/pemasok/{id}/delete-ajax', [PemasokController::class, 'deleteAjax'])
+        ->name('pemasok.delete.ajax');
     // barang
     Route::resource('barang', BarangController::class);
 
@@ -63,6 +81,8 @@ Route::middleware('auth')->group(function () {
     Route::get('laporan/pdf', [LaporanController::class, 'downloadPDF'])
         ->middleware('auth')
         ->name('laporan.pdf');
+    Route::get('/laporan/detail/{id_barang}', [LaporanController::class, 'detailBarang'])
+        ->name('laporan.detail');
     Route::middleware('can:isAdmin')->group(function () {
         Route::resource('pegawai', PegawaiController::class);
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
