@@ -128,4 +128,33 @@ class LaporanController extends Controller
             ->addBinding($stok_akumulasi->getBindings())
             ->get();
     }
+
+    public function detailBarang($id_barang, Request $request)
+    {
+        $bulan = $request->input('bulan');
+        $tahun = $request->input('tahun');
+
+        $detail = DB::table('transaksi_stok')
+            ->join('barang', 'transaksi_stok.id_barang', '=', 'barang.id_barang')
+            ->join('pegawai', 'transaksi_stok.id_pegawai', '=', 'pegawai.id_pegawai')
+            ->where('transaksi_stok.id_barang', $id_barang)
+            ->when($bulan, function ($q) use ($bulan) {
+                $q->whereMonth('transaksi_stok.created_at', $bulan);
+            })
+            ->when($tahun, function ($q) use ($tahun) {
+                $q->whereYear('transaksi_stok.created_at', $tahun);
+            })
+            ->select(
+                'transaksi_stok.created_at as tanggal',
+                'barang.barang as nama_barang',
+                'transaksi_stok.transaksi',
+                'transaksi_stok.jumlah',
+                'transaksi_stok.keterangan',
+                'pegawai.pegawai as nama_pegawai'
+            )
+            ->orderBy('transaksi_stok.created_at', 'asc')
+            ->get();
+
+        return response()->json($detail);
+    }
 }

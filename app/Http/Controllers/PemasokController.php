@@ -64,4 +64,57 @@ class PemasokController extends Controller
         $pemasok = Pemasok::all();
         return response()->json($pemasok);
     }
+
+    public function storeAjax(Request $request)
+    {
+        $validated = $request->validate([
+            'pemasok' => 'required|string|max:45',
+            'kontak'  => 'required|string|max:15',
+        ]);
+
+        $pemasok = Pemasok::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pemasok berhasil ditambahkan.',
+            'data'    => $pemasok,
+        ]);
+    }
+
+    // === AJAX UPDATE ===
+    public function updateAjax(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'pemasok' => 'required|string|max:45',
+            'kontak'  => 'required|string|max:15',
+        ]);
+
+        $pemasok = Pemasok::findOrFail($id);
+        $pemasok->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pemasok berhasil diperbarui.',
+            'data'    => $pemasok,
+        ]);
+    }
+
+    // === AJAX DELETE ===
+    public function deleteAjax($id)
+    {
+        $pemasok = Pemasok::findOrFail($id);
+        $pemasok->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pemasok berhasil dihapus.',
+        ]);
+    }
+
+    // public function getData()
+    // {
+    //     $pemasok = Pemasok::all();
+    //     return response()->json($pemasok);
+    // }
+
 }
