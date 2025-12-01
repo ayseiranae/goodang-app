@@ -16,7 +16,6 @@
                     <input id="search-barang" type="text" placeholder="Ketik nama barang..."
                         class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <div id="search-results" class="mt-4 text-sm">
-                        {{-- hasil AJAX tampil di sini --}}
                     </div>
                 </div>
 
@@ -162,7 +161,7 @@
             const results = document.getElementById('search-results');
             let timer = null;
 
-            input.addEventListener('keyup', function() {
+            input.addEventListener('keyup', function () {
                 clearTimeout(timer);
                 const keyword = this.value.trim();
 
